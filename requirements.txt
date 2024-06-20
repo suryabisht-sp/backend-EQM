@@ -1,5 +1,4 @@
 appdirs==1.4.4
-apturl
 asgiref==3.8.1
 attrs==21.2.0
 Babel==2.8.0
