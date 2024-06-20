@@ -2,6 +2,7 @@ services:
   - type: web
     name: my-django-app
     env: python
+    pythonVersion: 3.10.12
     buildCommand: |
       apt-get update && apt-get install -y build-essential python3-dev
       pip install -r requirements.txt
