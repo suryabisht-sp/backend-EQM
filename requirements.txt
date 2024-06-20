@@ -1,5 +1,4 @@
 appdirs==1.4.4
-apturl==0.5.2
 asgiref==3.8.1
 attrs==21.2.0
 Babel==2.8.0
@@ -62,7 +61,6 @@ mpmath==0.0.0
 netifaces==0.11.0
 numba==0.55.1
 numexpr==2.8.1
-numpy==1.21.5
 oauthlib==3.2.0
 odfpy==1.4.2
 olefile==0.46
