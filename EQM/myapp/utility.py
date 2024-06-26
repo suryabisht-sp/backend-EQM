@@ -207,61 +207,80 @@ from sklearn.metrics import r2_score
 
 # #Data Preparation--------------------------------------------
 # Convert data to DataFrame
-df = pd.DataFrame(data)
 
-# Convert date string to datetime object and extract month and year
-df['date'] = pd.to_datetime(df['date'])
-df['month'] = df['date'].dt.month
-df['year'] = df['date'].dt.year
 
-# Encode categorical variables
-encoder = LabelEncoder()
-#Encodes the categorical variable 'category' using LabelEncoder and stores the encoded values in 'category_encoded
-df['category_encoded'] = encoder.fit_transform(df['category'])
+def dataTrain(data):
 
-# Define Features (X) and Target (y)-------------------------------------------------
-X = df[['year', 'month', 'category_encoded']].copy() 
-y = df['amount']
+    # print(data,"identifier")
+    # return "TEsting"
+        print(data)
+    
+        print(f"Data is :- {data['data']}")
+        df = pd.DataFrame(data['data'])
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # Convert date string to datetime object and extract month and year
+        df['date'] = pd.to_datetime(df['date'])
+        df['month'] = df['date'].dt.month
+        df['year'] = df['date'].dt.year
 
-# Initialize Gradient Boosting Regressor
-gbr = GradientBoostingRegressor()
+        # Encode categorical variables
+        encoder = LabelEncoder()
+        #Encodes the categorical variable 'category' using LabelEncoder and stores the encoded values in 'category_encoded
+        df['category_encoded'] = encoder.fit_transform(df['category'])
 
-# Train the model
-# gbr.fit(X, y)
-gbr.fit(X_train, y_train)
+        # Define Features (X) and Target (y)-------------------------------------------------
+        X = df[['year', 'month', 'category_encoded']].copy() 
+        y = df['amount']
 
-# Predict on the test set
-y_pred = gbr.predict(X_test)
-acc=gbr.score(X_test,y_test)
-print("========",f"{acc}")
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Calculate R-squared score
-r2 = r2_score(y_test, y_pred)
-print(f"R-squared score: {r2:.2f}")
+        # Initialize Gradient Boosting Regressor
+        gbr = GradientBoostingRegressor()
 
-joblib.dump(gbr, 'expenses_EQ.pkl')
-# Function to predict expenses
-def predict_expenses(year, month, category):
-    category_encoded = encoder.transform([category])[0]
-    prediction = gbr.predict(pd.DataFrame([[year, month, category_encoded]], columns=['year', 'month', 'category_encoded']))
-    return prediction[0]
+        # Train the model
+        # gbr.fit(X, y)
+        gbr.fit(X_train, y_train)
 
-# Interactive user input and prediction
-def main():
-    while True:
-        try:
-            user_year = int(input("Enter the year (e.g., 2023): "))
-            user_month = int(input("Enter the month (1-12): "))
-            user_category = input("Enter the category (e.g., Rent, Utilities, Payroll, Inventory, Marketing): ")
-            if user_month < 1 or user_month > 12:
-                print("Month should be between 1 and 12.")
-                continue
-            predicted_amount = predict_expenses(user_year, user_month, user_category)
-            print(f"Predicted expense amount for {user_category} in {datetime(year=user_year, month=user_month, day=1).strftime('%B %Y')}: ${predicted_amount:.2f}")
-            break      
-        except ValueError:
-            print("Invalid input. Please enter a valid year and month.")
+        # Predict on the test set
+        y_pred = gbr.predict(X_test)
+        acc=gbr.score(X_test,y_test)
+        print("========",f"{acc}")
 
-main()
+        # Calculate R-squared score
+        r2 = r2_score(y_test, y_pred)
+        print(f"R-squared score: {r2:.2f}")
+
+        joblib.dump(gbr, 'expenses_EQ.pkl')
+        # Function to predict expenses
+        def predict_expenses(year, month, category):
+            category_encoded = encoder.transform([category])[0]
+            prediction = gbr.predict(pd.DataFrame([[year, month, category_encoded]], columns=['year', 'month', 'category_encoded']))
+            return prediction[0]
+
+        # Interactive user input and prediction
+        def main():
+            while True:
+                try:
+                    # user_year = int(input("Enter the year (e.g., 2023): "))
+                    # user_month = int(input("Enter the month (1-12): "))
+                    # user_category = input("Enter the category (e.g., Rent, Utilities, Payroll, Inventory, Marketing): ")
+                    user_year = int(data['year'])
+                    user_month = int(data['month'])
+                    user_category = data['category']
+                    if user_month < 1 or user_month > 12:
+                        print("Month should be between 1 and 12.")
+                        continue
+                    predicted_amount = predict_expenses(user_year, user_month, user_category)
+                    print(f"Predicted expense amount for {user_category} in {datetime(year=user_year, month=user_month, day=1).strftime('%B %Y')}: ${predicted_amount:.2f}")
+                    return f"Predicted expense amount for {user_category} in {datetime(year=user_year, month=user_month, day=1).strftime('%B %Y')}: ${predicted_amount:.2f}" 
+                except ValueError:
+                    print("Invalid input. Please enter a valid year and month.")
+
+        return main()
+
+
+# {
+# "year":"2025",
+# "month":"6",
+# "category":"Rent"
+# }

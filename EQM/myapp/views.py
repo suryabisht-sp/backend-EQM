@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 import os
 from dotenv import load_dotenv
 load_dotenv()
+from .utility import dataTrain
 
 OPEN_AI_KEY = os.getenv('OPEN_AI_KEY')
 openai.api_key = OPEN_AI_KEY
@@ -25,6 +26,23 @@ class PredictExpenses(APIView):
         print(f"data = {data}")
         return Response({"data":data})
 
+class predict_expense_regression(APIView):
+    def get(self, request):
+        return Response("Get wala")
+    def post(self, request):
+        payload={
+            "data":[],  
+            "year":request.data['year'],
+            "month":request.data['month'],
+            "category":request.data['category']
+        }
+        objects = Expense.objects.all()
+        for object in objects:
+            data_dict = {"date":object.date, "category":object.category, "amount":object.amount}
+            payload['data'].append(data_dict)
+        expense = dataTrain(payload)
+        return JsonResponse({'generated_text': expense})
+
 class predict_expense(APIView):
     def post(self, request):
         data = []
@@ -35,7 +53,6 @@ class predict_expense(APIView):
         month = request.data['month']
         year = request.data['year']
         category= request.data['category']
-
         prompt_text=''
 
         if category == "All":
@@ -86,5 +103,6 @@ def adding():
             serializer.save()
         else:
             print(f"Error in data: {serializer.errors}")
+
 
 
