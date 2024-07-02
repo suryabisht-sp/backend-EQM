@@ -124,6 +124,9 @@ data = [
     {"id": 105, "date": "2024-06-10", "category": "Payroll", "description": "Chef salary", "amount": 540.00},
     {"id": 106, "date": "2024-06-10", "category": "Payroll", "description": "Waitstaff wages", "amount": 540.00},
 ]
+
+
+# data from Db
 class PredictExpenses(APIView):
     def get(self, request):
         data = []
@@ -134,6 +137,7 @@ class PredictExpenses(APIView):
         print(f"data = {data}")
         return Response({"data":data})
 
+# prediction using regression
 class predict_expense_regression(APIView):
     def get(self, request):
         return Response("Get wala")
@@ -151,6 +155,7 @@ class predict_expense_regression(APIView):
         expense = dataTrain(payload)
         return JsonResponse({'generated_text': expense})
 
+# predicit expenses using openi
 class predict_expense(APIView):
     def post(self, request):
         data = []
@@ -195,6 +200,7 @@ class predict_expense(APIView):
         print("predicion is here:- ", filtered_prediction)
 
         return JsonResponse({'generated_text': filtered_prediction})
+
 
 # adding data to DB
 class addData(APIView):
