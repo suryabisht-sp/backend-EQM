@@ -81,3 +81,37 @@ def dataTrain(data):
                     print("Invalid input. Please enter a valid year and month.")
 
         return main()
+
+
+def dataScikit(data):  
+        def load_model():
+         gbr1 = joblib.load('expenses_EQ.pkl')
+         encoder1 = joblib.load('encoder.pkl')
+         return gbr1, encoder1
+
+        # Function to predict expenses
+        def predict_expenses(year, month, category):
+            gbr1, encoder1 = load_model()
+            category_encoded = encoder1.transform([category])[0]
+            prediction = gbr1.predict(pd.DataFrame([[year, month, category_encoded]], columns=['year', 'month', 'category_encoded']))
+            return prediction[0]
+
+        def main1():
+            while True:
+                try:
+                    # user_year = int(input("Enter the year (e.g., 2023): "))
+                    # user_month = int(input("Enter the month (1-12): "))
+                    # user_category = input("Enter the category (e.g., Rent, Utilities, Payroll, Inventory, Marketing): ")
+                    user_year = int(data['year'])
+                    user_month = int(data['month'])
+                    user_category = data['category']
+                    if user_month < 1 or user_month > 12:
+                        print("Month should be between 1 and 12.")
+                        continue
+                    predicted_amount = predict_expenses(user_year, user_month, user_category)
+                    print(f"Predicted expense amount for {user_category} in {datetime(year=user_year, month=user_month, day=1).strftime('%B %Y')}: ${predicted_amount:.2f}")
+                    return f"Predicted expense amount for {user_category} in {datetime(year=user_year, month=user_month, day=1).strftime('%B %Y')}: ${predicted_amount:.2f}" 
+                except ValueError:
+                    print("Invalid input. Please enter a valid year and month.")
+
+        return main1()

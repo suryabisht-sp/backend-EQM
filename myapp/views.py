@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from .utility import dataTrain
+from .utility import dataTrain, dataScikit
 
 OPEN_AI_KEY = os.getenv('OPEN_AI_KEY')
 openai.api_key = OPEN_AI_KEY
@@ -143,7 +143,7 @@ class predict_expense_regression(APIView):
         return Response("Get wala")
     def post(self, request):
         payload={
-            "data":[],  
+            "data":data,  
             "year":request.data['year'],
             "month":request.data['month'],
             "category":request.data['category']
@@ -153,16 +153,18 @@ class predict_expense_regression(APIView):
         #     data_dict = {"date":object.date, "category":object.category, "amount":object.amount}
         #     payload['data'].append(data_dict)
         expense = dataTrain(payload)
+        # expense = dataScikit(payload)
         return JsonResponse({'generated_text': expense})
+    
 
 # predicit expenses using openi
 class predict_expense(APIView):
     def post(self, request):
-        data = []
-        objects = Expense.objects.all()
-        for object in objects:
-            data_dict = {"date":object.date, "category":object.category, "amount":object.amount}
-            data.append(data_dict)
+        # data = []
+        # objects = Expense.objects.all()
+        # for object in objects:
+        #     data_dict = {"date":object.date, "category":object.category, "amount":object.amount}
+        #     data.append(data_dict)
         month = request.data['month']
         year = request.data['year']
         category= request.data['category']
