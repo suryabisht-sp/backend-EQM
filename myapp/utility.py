@@ -12,7 +12,7 @@ from sklearn.metrics import r2_score
 
 def dataTrain(data):  
                 
-        print(f"Data is :- {data['data']}")
+        # print(f"Data is :- {data['data']}")
         df = pd.DataFrame(data['data'])
 
         # Convert date string to datetime object and extract month and year
@@ -46,11 +46,20 @@ def dataTrain(data):
         r2 = r2_score(y_test, y_pred)
         print(f"R-squared score: {r2:.2f}")
 
+        # Save the model and the encoder
         # joblib.dump(gbr, 'expenses_EQ.pkl')
+        # joblib.dump(encoder, 'encoder.pkl')
+        
+        def load_model():
+         gbr1 = joblib.load('expenses_EQ.pkl')
+         encoder1 = joblib.load('encoder.pkl')
+         return gbr1, encoder1
+
         # Function to predict expenses
         def predict_expenses(year, month, category):
-            category_encoded = encoder.transform([category])[0]
-            prediction = gbr.predict(pd.DataFrame([[year, month, category_encoded]], columns=['year', 'month', 'category_encoded']))
+            gbr1, encoder1 = load_model()
+            category_encoded = encoder1.transform([category])[0]
+            prediction = gbr1.predict(pd.DataFrame([[year, month, category_encoded]], columns=['year', 'month', 'category_encoded']))
             return prediction[0]
 
         def main():
@@ -72,10 +81,3 @@ def dataTrain(data):
                     print("Invalid input. Please enter a valid year and month.")
 
         return main()
-
-
-# {
-# "year":"2025",
-# "month":"6",
-# "category":"Rent"
-# }
