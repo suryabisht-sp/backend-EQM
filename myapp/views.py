@@ -148,10 +148,10 @@ class predict_expense_regression(APIView):
             "month":request.data['month'],
             "category":request.data['category']
         }
-        objects = Expense.objects.all()
-        for object in objects:
-            data_dict = {"date":object.date, "category":object.category, "amount":object.amount}
-            payload['data'].append(data_dict)
+        # objects = Expense.objects.all()
+        # for object in objects:
+        #     data_dict = {"date":object.date, "category":object.category, "amount":object.amount}
+        #     payload['data'].append(data_dict)
         expense = dataTrain(payload)
         return JsonResponse({'generated_text': expense})
 
